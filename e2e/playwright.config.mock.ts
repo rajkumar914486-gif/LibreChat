@@ -12,7 +12,8 @@ const fakeModelHookPath = path.resolve(rootPath, 'e2e/setup/fake-model.js');
 const configTemplatePath = path.resolve(rootPath, 'e2e/config/librechat.e2e.yaml');
 const configPath = path.resolve(rootPath, 'e2e/.generated/librechat.e2e.yaml');
 const reportPath = path.resolve(rootPath, 'e2e/playwright-report');
-const deploymentSkillsPath = path.resolve(rootPath, 'e2e/fixtures/deployment-skills');
+const deploymentSkillsFixturePath = path.resolve(rootPath, 'e2e/fixtures/deployment-skills');
+const deploymentSkillsPath = path.resolve(rootPath, 'e2e/.generated/deployment-skills');
 
 const baseURL = getE2EBaseURL();
 const chromiumChannel = process.env.E2E_CHROMIUM_CHANNEL || undefined;
@@ -49,6 +50,17 @@ const preservedCredentialEnvKeys = new Set([
  * model injected via `LIBRECHAT_TEST_RUN_HOOK` overrides the run before any
  * request is made, so no real (or mock HTTP) provider is contacted.
  */
+function prepareDeploymentSkills() {
+  fs.rmSync(deploymentSkillsPath, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(deploymentSkillsPath), { recursive: true });
+  fs.cpSync(deploymentSkillsFixturePath, deploymentSkillsPath, { recursive: true });
+  fs.cpSync(
+    path.resolve(rootPath, 'skill/personal-companion'),
+    path.join(deploymentSkillsPath, 'personal-companion'),
+    { recursive: true },
+  );
+}
+
 function writeRuntimeMockConfig() {
   const template = fs.readFileSync(configTemplatePath, 'utf8');
   const config =
@@ -88,6 +100,7 @@ function neutralizeDotenvSecrets(envFile: string, keep: Set<string>) {
   }
 }
 
+prepareDeploymentSkills();
 writeRuntimeMockConfig();
 neutralizeCredentialEnv(process.env, preservedCredentialEnvKeys);
 Object.assign(process.env, baseEnv);

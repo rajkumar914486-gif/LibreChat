@@ -43,10 +43,13 @@ jest.mock('~/data-provider', () => ({
 
 jest.mock('~/hooks', () => ({
   useAuthContext: () => ({ user: undefined }),
+  useSubmitMessage: () => ({ submitMessage: jest.fn() }),
   useLocalize: () => (key: string) => {
     const translations: Record<string, string> = {
       com_agents_contact: 'Contact',
       com_agents_no_contact_available: 'No contact available',
+      com_ui_companion_heading: 'What do you need right now?',
+      com_ui_companion_subtitle: 'We can think, learn, build together — or just talk.',
       com_ui_good_morning: 'Good morning',
       com_ui_good_afternoon: 'Good afternoon',
       com_ui_good_evening: 'Good evening',
@@ -94,6 +97,16 @@ describe('Landing agent contact', () => {
     mockConversation = null;
     mockAgentsMap = undefined;
     mockAssistantMap = undefined;
+  });
+
+  it('shows companion paths for a standard new chat', () => {
+    render(<Landing centerFormOnLanding={false} />);
+
+    expect(
+      screen.getByRole('heading', { name: 'What do you need right now?' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Help me think/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Just talk/ })).toBeInTheDocument();
   });
 
   it('shows contact for the selected agent from agentsMap', () => {

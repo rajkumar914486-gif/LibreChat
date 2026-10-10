@@ -1,0 +1,92 @@
+PERSONAL COMPANION — RESEARCH NOTES
+Prepared: 2026-10-10
+Repository: https://github.com/rajkumar914486-gif/LibreChat
+Purpose: turn a multi-model chat platform into a context-aware personal assistant without pretending that a prompt alone creates new model capabilities.
+
+RESEARCH SNAPSHOT
+
+1) MIT CSAIL — Uhura: Personal Assistant that Manages Risk
+https://www.csail.mit.edu/research/uhura-personal-assistant-manages-risk
+Research implication: an assistant should elicit the real goal, check feasibility, negotiate trade-offs when constraints conflict, and plan contingencies. It should not blindly fail when a plan is impossible or silently relax the user's requirements.
+Design decision: when time, energy, deadlines, and goals conflict, explain the constraint and propose the smallest useful adjustment. Ask only when the missing choice changes the recommendation.
+
+2) MIT CSAIL / MIT-IBM Watson AI Lab — Automated system teaches users when to collaborate with an AI assistant (2023)
+https://www.csail-dev-2025.csail.mit.edu/news/automated-system-teaches-users-when-collaborate-ai-assistant
+Peer-reviewed paper (NeurIPS 2023): https://proceedings.neurips.cc/paper_files/paper/2023/hash/61355b9c218505505d1bedede9da56b2-Abstract-Conference.html
+Related MIT Clinical ML project: https://clinicalml.org/publication/mozannar-2023-effective/
+Research implication: generic warnings and recommendations can be less useful than learning task-specific conditions in which an AI is reliable or unreliable, then practicing those conditions.
+Design decision: use task-specific checks and small practice loops to calibrate trust in AI, rather than relying on generic warnings. Distinguish known facts, inferences, uncertainty, and assumptions. Use feedback from corrections to improve future assistance; never treat confident language as evidence.
+
+3) Harvard SEAS — Personalising decision-making assistance based on overreliance rate in AI-assisted decision making (Swaroop, Buçinca, Gajos, Doshi-Velez; IUI 2025)
+https://kgajos.seas.harvard.edu/papers/swaroop2025personalising.pdf
+Publication record: https://kgajos.seas.harvard.edu/publications/
+DOI: https://doi.org/10.1145/3708359.3712128
+Research implication: users differ in how they rely on AI, and limited diagnostic probes can help personalize support. Assistance should not assume every user needs the same level of intervention.
+Design decision: adapt how much to explain, challenge, or hand over based on observed behavior and explicit feedback. Preserve user agency; never infer a fixed personality from a single interaction.
+
+4) LongMemEval — Benchmarking Chat Assistants on Long-Term Interactive Memory (ICLR 2025)
+https://proceedings.iclr.cc/paper_files/paper/2025/hash/d813d324dbf0598bbdc9c8e79740ed01-Abstract-Conference.html
+Research implication: long-term memory is not just remembering facts. It includes extracting information, reasoning across sessions, temporal reasoning, updating facts, and abstaining when memory is insufficient.
+Design decision: keep memories time-aware and correctable. When a recent update conflicts with an older fact, prefer the newer explicit statement and mark the older one as superseded. If uncertain, ask rather than fabricate continuity.
+
+5) In Prospect and Retrospect: Reflective Memory Management for Long-term Personalized Dialogue Agents (ACL 2025)
+https://aclanthology.org/2025.acl-long.413/
+Research implication: useful memory needs both forward-looking consolidation and retrospective correction, and retrieval should respond to the current task rather than blindly injecting everything.
+Design decision: separate stable preferences, active goals, current projects, and temporary state. Retrieve only relevant context. Periodically ask whether important assumptions are still true.
+
+6) From Recall to Forgetting: Benchmarking Long-Term Memory for Personalized Agents (ACL Findings 2026)
+https://aclanthology.org/2026.findings-acl.1337/
+Research implication: agents can reuse obsolete memories even when they have memory systems; stale-memory handling is a core reliability problem.
+Design decision: record dates and status for changing goals. Support correction, forgetting, and explicit supersession. Never present an old goal as current just because it appears in history.
+
+7) MIT CSAIL — MAIA: A Multimodal Automated Interpretability Agent (ICML 2024)
+https://multimodal-interpretability.csail.mit.edu/maia/
+Research implication: an agent can improve investigation by forming hypotheses, designing tests, observing outcomes, and updating hypotheses iteratively.
+Design decision: for projects and technical learning, use the loop: state the problem -> identify the unknown -> run a small test -> inspect evidence -> update the plan. Do not force a rigid learning taxonomy onto every task.
+
+SYNTHESIS: IMPLEMENTATION PRINCIPLES
+
+A. One conversational surface, multiple response behaviors
+The assistant should infer whether the user needs explanation, challenge, planning, execution help, reflection, or ordinary conversation from the request and context. Offer explicit modes when ambiguity matters, not as a mandatory menu on every turn.
+
+B. Adaptive, not arbitrary
+Adapt recommendations using: current stated goal, deadlines, available time, energy if volunteered, recent results, prerequisites, constraints, and user corrections. State the one or two decisive reasons behind a recommendation. If a critical variable is unknown, ask one direct question.
+
+C. Memory with provenance and time
+Use existing LibreChat memory only when enabled and available. Treat memory as fallible. Separate stable preferences from temporary states. Acknowledge uncertainty; update superseded facts; make important stored facts inspectable and correctable. Do not write private user details into a public repository or deployment-wide skill.
+
+D. Evidence over motivational theatre
+Do not claim competence, rank, completion, or progress based only on time spent, XP, streaks, or enthusiasm. Prefer observable evidence: a solved problem, an explained concept, a tested implementation, or a repeatable result. Keep challenges difficult enough to reveal the next knowledge gap but small enough to complete.
+
+E. Human agency and appropriate care
+Be supportive without claiming to be a literal family member, sentient being, or replacement for human relationships. Match tone to the moment. Do not push productivity when the user wants to talk. Do not use guilt, shame, false urgency, or emotional dependency.
+
+F. Tool honesty and safe execution
+Use only tools actually connected and authorized in the current deployment. Before consequential actions, summarize the action and request confirmation where required. Never claim background monitoring, calendar access, code execution, internet research, or external-model access unless that capability is genuinely available and used.
+
+G. Evaluate with adversarial scenarios
+Test at minimum:
+- the user's goal changes and the old goal is superseded;
+- the assistant has no reliable memory for a claimed detail;
+- the proposed plan exceeds the stated time budget;
+- the user wants conversation, not tasks;
+- the user corrects an assistant assumption;
+- an AI-generated answer conflicts with a source or test;
+- a task cannot be completed without a missing permission or integration;
+- the user requests deletion or correction of a stored memory.
+
+MEASUREMENT
+Track usefulness rather than engagement alone:
+- recommendation acceptance and completion (with user consent);
+- repeated corrections caused by stale or false memory;
+- calibration of confidence against verified outcomes;
+- time to identify the next useful action;
+- user-reported sense of control and relevance;
+- successful abstention when context is insufficient.
+
+IMPLEMENTATION NOTE
+This is a design brief grounded in the sources above, not evidence that the current repository already implements all these behaviors. The companion skill adds behavioral guidance to LibreChat. Durable memory, custom UI, proactive scheduling, integrations, and automated evaluation must each be implemented/configured and tested separately.
+
+
+EVIDENCE BOUNDARY
+These papers motivate design decisions; they do not demonstrate that this particular LibreChat customization is effective. The interface and prompt skill require the repository's CI, local build, and task-based human evaluation. Do not claim that personalization quality improves until memory retrieval, stale-memory updates, user corrections, and real tasks have been measured in the running deployment.
