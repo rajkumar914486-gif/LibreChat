@@ -14,6 +14,7 @@ import { useChatContext, useAgentsMapContext, useAssistantsMapContext } from '~/
 import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
 import AgentContact from '~/components/Agents/AgentContact';
 import ConvoIcon from '~/components/Endpoints/ConvoIcon';
+import PersonalCompanionPanel from './PersonalCompanionPanel';
 import { useLocalize, useAuthContext } from '~/hooks';
 
 const containerClassName =
@@ -244,6 +245,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
           />
         )}
       </div>
+      {!isAgent && !isAssistant && <PersonalCompanionPanel />}
     </div>
   );
 }
