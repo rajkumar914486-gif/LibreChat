@@ -94,7 +94,7 @@ cache: true
 
 # Custom interface configuration
 interface:
-  customWelcome: 'Welcome to LibreChat! Enjoy your experience.'
+  customWelcome: "I'm here. Tell me what's happening — we'll think, learn, build, plan, or just talk."
   # Enable/disable file search as a chatarea selection (default: true)
   # Note: This setting does not disable the Agents File Search Capability.
   # To disable the Agents Capability, see the Agents Endpoint configuration instead.
@@ -840,32 +840,27 @@ endpoints:
 #     # format: markdown        # 'markdown' (default) or 'text' (plain text, may increase latency)
 #     # timeout: 15000          # HTTP request timeout in milliseconds (max 120000); Tavily Extract receives seconds clamped to 1-60
 
-# Memory configuration for user memories
-# memory:
-#   # (optional) Disable memory functionality
-#   disabled: false
-#   # (optional) Restrict memory keys to specific values to limit memory storage and improve consistency
-#   validKeys: ["preferences", "work_info", "personal_info", "skills", "interests", "context"]
-#   # (optional) Maximum token limit for stored memory values
-#   tokenLimit: 10000
-#   # (optional) Maximum tokens from recent chat sent to the memory agent before truncation
-#   maxInputTokens: 12000
-#   # (optional) Enable personalization features (defaults to true if memory is configured)
-#   # When false, users will not see the Personalization tab in settings
-#   personalize: true
-#   # (optional) Memory agent configuration for automatic memory updates from chat messages.
-#   # If omitted, users can still create, edit, delete, and reference memories manually.
-#   agent:
-#     # Explicitly enables automatic memory updates from chat messages.
-#     enabled: true
-#     # Option 1: Use existing agent by ID
-#     id: "your-memory-agent-id"
-#     # Option 2: Define agent inline
-#     # provider: "openai"
-#     # model: "gpt-4o-mini"
-#     # instructions: "You are a memory management assistant. Store and manage user information accurately."
-#     # model_parameters:
-#     #   temperature: 0.1
+# Memory configuration for the personal companion.
+# Memories can contain sensitive personal information. Keep this deployment private
+# and review/edit stored memories through the Personalization settings.
+memory:
+  disabled: false
+  validKeys: ["preferences", "work_info", "personal_info", "skills", "interests", "context"]
+  tokenLimit: 10000
+  maxInputTokens: 12000
+  personalize: true
+  # Enable automatic memory updates only after configuring a model/agent you have access to.
+  # If omitted, users can still create, edit, delete, and reference memories manually.
+  # agent:
+  #   enabled: true
+  #   # Option 1: use an existing agent's ID:
+  #   id: "your-memory-agent-id"
+  #   # Option 2: define a memory agent inline (choose a provider/model you configured):
+  #   # provider: "openai"
+  #   # model: "gpt-4o-mini"
+  #   # instructions: "Store stable, useful user facts accurately; update superseded facts and never invent memories."
+  #   # model_parameters:
+  #   #   temperature: 0.1
 
 # Reject chat messages whose text matches credential-shaped patterns
 # before they reach moderation, the model, or persistence. Filter
