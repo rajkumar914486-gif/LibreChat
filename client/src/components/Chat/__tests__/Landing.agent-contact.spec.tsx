@@ -43,6 +43,7 @@ jest.mock('~/data-provider', () => ({
 
 jest.mock('~/hooks', () => ({
   useAuthContext: () => ({ user: undefined }),
+  useSubmitMessage: () => ({ submitMessage: jest.fn() }),
   useLocalize: () => (key: string) => {
     const translations: Record<string, string> = {
       com_agents_contact: 'Contact',
@@ -94,6 +95,16 @@ describe('Landing agent contact', () => {
     mockConversation = null;
     mockAgentsMap = undefined;
     mockAssistantMap = undefined;
+  });
+
+  it('shows companion paths for a standard new chat', () => {
+    render(<Landing centerFormOnLanding={false} />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Your next move starts here' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Help me think/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Just talk/ })).toBeInTheDocument();
   });
 
   it('shows contact for the selected agent from agentsMap', () => {
