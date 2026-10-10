@@ -5,6 +5,9 @@ import { NEW_CHAT_PATH } from './helpers';
 const DEPLOYMENT_SKILL_NAME = 'e2e-deployment-skill';
 const DEPLOYMENT_SKILL_DESCRIPTION =
   'Use this deployment skill to verify shared skills load during Playwright startup.';
+const PERSONAL_COMPANION_SKILL_NAME = 'personal-companion';
+const PERSONAL_COMPANION_SKILL_DESCRIPTION =
+  'Adaptively assist the user across learning, decisions, projects, emotional reflection, and daily life. Use for personal guidance, teaching, planning, challenges, building, research, and natural conversation.';
 
 type RefreshTokenBody = {
   token?: string;
@@ -186,6 +189,36 @@ test.describe('deployment skills', () => {
       isExecutable: false,
     });
     expect(files.files?.[0]).not.toHaveProperty('content');
+
+    const companionList = await fetchJson<{ skills?: SkillSummary[] }>(
+      page,
+      `/api/skills?search=${encodeURIComponent(PERSONAL_COMPANION_SKILL_NAME)}&limit=10`,
+      token,
+    );
+    const companion = companionList.skills?.find(
+      (item) => item.name === PERSONAL_COMPANION_SKILL_NAME,
+    );
+    expect(companion).toMatchObject({
+      name: PERSONAL_COMPANION_SKILL_NAME,
+      description: PERSONAL_COMPANION_SKILL_DESCRIPTION,
+      source: 'deployment',
+      sourceMetadata: { deployment: true },
+      alwaysApply: true,
+      isPublic: true,
+    });
+
+    const companionDetail = await fetchJson<SkillDetail>(
+      page,
+      `/api/skills/${encodeURIComponent(companion!._id)}`,
+      token,
+    );
+    expect(companionDetail.body).toContain('Act as one consistent, context-aware assistant');
+    expect(companionDetail.frontmatter).toMatchObject({
+      name: PERSONAL_COMPANION_SKILL_NAME,
+      description: PERSONAL_COMPANION_SKILL_DESCRIPTION,
+      'always-apply': true,
+      'user-invocable': true,
+    });
 
     const downloaded = await fetchJson<SkillFileContent>(
       page,
