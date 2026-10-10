@@ -8,7 +8,7 @@ import {
   Sparkles,
   Swords,
 } from 'lucide-react';
-import { useSubmitMessage } from '~/hooks';
+import { useLocalize, useSubmitMessage } from '~/hooks';
 
 const companionPaths = [
   {
@@ -50,6 +50,7 @@ const companionPaths = [
 
 function PersonalCompanionPanel() {
   const { submitMessage } = useSubmitMessage();
+  const localize = useLocalize();
 
   const startPath = useCallback(
     (prompt: string) => {
@@ -72,10 +73,10 @@ function PersonalCompanionPanel() {
             id="personal-companion-heading"
             className="text-sm font-semibold tracking-wide text-text-primary"
           >
-            What do you need right now?
+            {localize('com_ui_companion_heading')}
           </h2>
           <p className="mt-0.5 text-xs text-text-secondary">
-            We can think, learn, build together — or just talk.
+            {localize('com_ui_companion_subtitle')}
           </p>
         </div>
       </div>
@@ -86,11 +87,11 @@ function PersonalCompanionPanel() {
             key={title}
             type="button"
             onClick={() => startPath(prompt)}
-            className="group relative flex min-h-[82px] flex-col items-start justify-between overflow-hidden rounded-2xl border border-border-medium/80 bg-surface-secondary/70 p-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-surface-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:min-h-[90px] sm:p-3.5"
+            className="border-border-medium/80 bg-surface-secondary/70 group relative flex min-h-[82px] flex-col items-start justify-between overflow-hidden rounded-2xl border p-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-500/40 hover:bg-surface-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:min-h-[90px] sm:p-3.5"
             aria-label={`${title}: ${description}`}
           >
             <span className="flex w-full items-center justify-between">
-              <span className="flex size-8 items-center justify-center rounded-xl border border-border-medium/70 bg-surface-primary text-text-secondary transition-colors group-hover:border-cyan-500/30 group-hover:text-cyan-600 dark:group-hover:text-cyan-300">
+              <span className="border-border-medium/70 flex size-8 items-center justify-center rounded-xl border bg-surface-primary text-text-secondary transition-colors group-hover:border-cyan-500/30 group-hover:text-cyan-600 dark:group-hover:text-cyan-300">
                 <Icon size={16} aria-hidden="true" />
               </span>
               <ArrowUpRight

@@ -983,6 +983,8 @@
   "com_ui_command_finished": "Finished running",
   "com_ui_command_placeholder": "Optional: Enter a command for the prompt or name will be used",
   "com_ui_command_usage_placeholder": "Select a Prompt by command or name",
+  "com_ui_companion_heading": "What do you need right now?",
+  "com_ui_companion_subtitle": "We can think, learn, build together — or just talk.",
   "com_ui_complete": "Complete!",
   "com_ui_complete_setup": "Complete Setup",
   "com_ui_concise": "Concise",

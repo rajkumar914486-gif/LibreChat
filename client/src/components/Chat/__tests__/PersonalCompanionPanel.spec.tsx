@@ -7,6 +7,13 @@ const mockSubmitMessage = jest.fn();
 
 jest.mock('~/hooks', () => ({
   useSubmitMessage: () => ({ submitMessage: mockSubmitMessage }),
+  useLocalize: () => (key: string) => {
+    const translations: Record<string, string> = {
+      com_ui_companion_heading: 'What do you need right now?',
+      com_ui_companion_subtitle: 'We can think, learn, build together — or just talk.',
+    };
+    return translations[key] || key;
+  },
 }));
 
 describe('PersonalCompanionPanel', () => {
