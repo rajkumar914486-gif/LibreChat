@@ -12,12 +12,14 @@ Design decision: when time, energy, deadlines, and goals conflict, explain the c
 
 2) MIT CSAIL / MIT-IBM Watson AI Lab — Automated system teaches users when to collaborate with an AI assistant (2023)
 https://www.csail-dev-2025.csail.mit.edu/news/automated-system-teaches-users-when-collaborate-ai-assistant
-Related paper: Effective Human-AI Teams via Learned Natural Language Rules and Onboarding
+Peer-reviewed paper (NeurIPS 2023): https://proceedings.neurips.cc/paper_files/paper/2023/hash/61355b9c218505505d1bedede9da56b2-Abstract-Conference.html
+Related MIT Clinical ML project: https://clinicalml.org/publication/mozannar-2023-effective/
 Research implication: generic warnings and recommendations can be less useful than learning task-specific conditions in which an AI is reliable or unreliable, then practicing those conditions.
-Design decision: teach the user how to verify important outputs. Distinguish known facts, inferences, uncertainty, and assumptions. Use feedback from corrections to improve future assistance; never treat confident language as evidence.
+Design decision: use task-specific checks and small practice loops to calibrate trust in AI, rather than relying on generic warnings. Distinguish known facts, inferences, uncertainty, and assumptions. Use feedback from corrections to improve future assistance; never treat confident language as evidence.
 
 3) Harvard SEAS — Personalising decision-making assistance based on overreliance rate in AI-assisted decision making (Swaroop, Buçinca, Gajos, Doshi-Velez; IUI 2025)
-https://kgajos.seas.harvard.edu/publications/
+https://kgajos.seas.harvard.edu/papers/swaroop2025personalising.pdf
+Publication record: https://kgajos.seas.harvard.edu/publications/
 DOI: https://doi.org/10.1145/3708359.3712128
 Research implication: users differ in how they rely on AI, and limited diagnostic probes can help personalize support. Assistance should not assume every user needs the same level of intervention.
 Design decision: adapt how much to explain, challenge, or hand over based on observed behavior and explicit feedback. Preserve user agency; never infer a fixed personality from a single interaction.
@@ -84,3 +86,7 @@ Track usefulness rather than engagement alone:
 
 IMPLEMENTATION NOTE
 This is a design brief grounded in the sources above, not evidence that the current repository already implements all these behaviors. The companion skill adds behavioral guidance to LibreChat. Durable memory, custom UI, proactive scheduling, integrations, and automated evaluation must each be implemented/configured and tested separately.
+
+
+EVIDENCE BOUNDARY
+These papers motivate design decisions; they do not demonstrate that this particular LibreChat customization is effective. The interface and prompt skill require the repository's CI, local build, and task-based human evaluation. Do not claim that personalization quality improves until memory retrieval, stale-memory updates, user corrections, and real tasks have been measured in the running deployment.
