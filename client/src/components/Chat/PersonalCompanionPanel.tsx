@@ -64,7 +64,7 @@ function PersonalCompanionPanel() {
       className="mx-auto mt-5 w-full max-w-3xl px-2 sm:px-4"
     >
       <div className="mb-3 flex items-center justify-center gap-2 text-center">
-        <span className="flex size-7 items-center justify-center rounded-full border border-cyan-500/25 bg-cyan-500/10 text-cyan-600 dark:text-cyan-300">
+        <span className="relative flex size-8 items-center justify-center rounded-full border border-cyan-500/30 bg-gradient-to-br from-cyan-400/20 via-sky-500/10 to-violet-500/20 text-cyan-600 shadow-sm dark:text-cyan-300">
           <Sparkles size={14} aria-hidden="true" />
         </span>
         <div>
@@ -72,10 +72,10 @@ function PersonalCompanionPanel() {
             id="personal-companion-heading"
             className="text-sm font-semibold tracking-wide text-text-primary"
           >
-            Your next move starts here
+            What do you need right now?
           </h2>
           <p className="mt-0.5 text-xs text-text-secondary">
-            Pick a direction, or simply tell me what is on your mind.
+            We can think, learn, build together — or just talk.
           </p>
         </div>
       </div>
