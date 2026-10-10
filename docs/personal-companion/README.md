@@ -1,46 +1,59 @@
-# Personal Companion integration
+# Personal Companion
 
-This branch adds a shared LibreChat deployment skill and its research notes. It does not replace LibreChat's chat interface or claim that a skill by itself provides new model abilities.
+This branch adds the first usable companion layer to your LibreChat fork: a persistent behavioral skill, a custom new-chat launcher, focused tests, and research-informed implementation notes.
 
-## What is included
+## Included
 
-- `skill/personal-companion/SKILL.md`: behavioral instructions for adapting between guide, teacher, challenger, strategist, builder, researcher, operator, and companion behaviors.
-- `docs/personal-companion/RESEARCH_NOTES.txt`: research-informed design principles and source links.
+- `skill/personal-companion/SKILL.md` — the assistant adapts between guide, teacher, challenger, strategist, builder, researcher, operator, and companion. It has explicit rules for stale memory, feasibility, care, user agency, and capability honesty.
+- `client/src/components/Chat/PersonalCompanionPanel.tsx` — a responsive new-chat panel with five working prompt starters: **Help me think**, **Teach me**, **Challenge me**, **Build with me**, and **Just talk**. Each submits through LibreChat's existing chat submission flow.
+- `client/src/components/Chat/__tests__/PersonalCompanionPanel.spec.tsx` — focused tests for rendering, challenge submission, and the no-agenda conversation path.
+- `docs/personal-companion/RESEARCH_NOTES.txt` — research sources and design decisions.
+- This installation and validation guide.
 
-LibreChat's deployment-skill system loads skills from the repository's configured deployment skills directory. This repository already documents `skill/` as the shared deployment-skills directory. Confirm that deployment skills and Skills are enabled in your running instance; then restart the server so the new skill is loaded. The skill is shared deployment guidance, not a private memory store.
+## Enable it in a deployment
 
-## Suggested welcome copy
+The changes are on branch `feat/personal-intelligence-companion` and are proposed in a draft pull request. To try them, build/deploy that branch or merge it into your deployment's source tree first.
 
-In your deployment's `librechat.yaml`, consider setting:
+LibreChat documents `skill/` as its shared deployment-skills directory. Make sure your running instance is built from this branch, that the Skills feature is enabled for your user/model, and restart the server. Then verify **Personal Companion** appears in the Skills interface. Deployment skills are read-only shared instructions loaded at server startup, not a per-user memory store.
+
+The new-chat panel is integrated into the existing landing page and uses the currently selected LibreChat endpoint/model. It does not silently switch providers or create new API credentials.
+
+## Welcome text (optional)
+
+Merge this into your existing `librechat.yaml` `interface:` block. Do not replace the rest of your configuration.
 
 ```yaml
 interface:
   customWelcome: "I'm here. Tell me what's happening — I'll help you think, learn, build, plan, or just talk."
 ```
 
-Merge this into your existing `interface` section; do not replace the rest of your configuration.
+## Make personalization persist
 
-## Enable the skill
+LibreChat has a user-memory feature; this skill explains how to use available memory carefully but does not itself create or import memory. In your running configuration, review the documented `memory:` settings in `librechat.example.yaml`. At minimum, enable the memory/personalization features and ensure your chosen endpoint or agent has memory capability.
 
-1. Deploy or check out branch `feat/personal-intelligence-companion`.
-2. Confirm the deployment's skills feature is enabled and its deployment skills directory points to the repository's `skill/` directory (or copy `skill/personal-companion/` into the configured deployment skills directory).
-3. Restart LibreChat.
-4. In the Skills interface, verify that **Personal Companion** is visible and available. If the server's skill loader or feature flags differ in your deployment, follow the documentation for that exact LibreChat version.
+Automatic memory updates require a configured memory agent (existing agent ID or provider/model). Configure this only for a provider you have actually set up. Without that agent, users may still be able to manage/reference memories manually, but the companion will not magically learn every detail from every conversation. The system also does not import ChatGPT/Gemini/Claude histories; import only context you intentionally want to retain.
 
-## Memory and personalization
+## What this does not claim
 
-LibreChat has user memory preferences, but memory must be enabled and available to the chosen model/configuration. This skill tells the assistant how to use available memory carefully; it does not create cross-service memory or automatically import ChatGPT conversations. Import only the context you want LibreChat to retain, and inspect/correct stored memories using the features your deployment actually exposes.
-
-## What is not implemented by this branch
-
-This is a first integration layer, not the finished dream system. It does not add a new autonomous planner service, background monitoring, calendar/device access, new model providers, or a custom animated companion UI. Those require separate implementation, permissions, integrations, and testing. LibreChat's existing configured providers, agents, tools, and memory remain the runtime capabilities.
+This is an incremental foundation, not a fully autonomous JARVIS clone. It does not add background monitoring, calendar/device control, an independent planning daemon, or cross-service memory synchronization. Those require separate integrations, permissions, and tests. It cannot make a weak model as capable as a stronger one merely by prompt. Existing LibreChat providers, tools, and security boundaries remain in force.
 
 ## Validation checklist
 
-- [ ] Skill appears after restart.
-- [ ] Ask it to explain a topic and confirm it teaches at the right level.
-- [ ] Ask it to challenge you and confirm it gives a bounded task with a clear success condition.
-- [ ] Tell it you only want to talk and confirm it does not force a productivity plan.
-- [ ] Correct a remembered goal and check whether future replies follow the newer fact.
-- [ ] Disable memory and verify the assistant does not claim to remember prior sessions.
-- [ ] Confirm no API keys, private memories, or secrets were added to this repository.
+Run from a full local checkout with dependencies installed:
+
+```bash
+npm run test:client -- --runInBand PersonalCompanionPanel.spec.tsx
+npm run typecheck --workspace @librechat/frontend
+```
+
+Also manually verify in the running application:
+- [ ] The **Personal Companion** deployment skill appears after restart.
+- [ ] Each new-chat card submits its intended prompt.
+- [ ] Teaching is clear and appropriately scoped.
+- [ ] Challenges have an observable success condition and do not inflate competence.
+- [ ] **Just talk** does not force a task list.
+- [ ] A recent explicit correction supersedes an old remembered goal.
+- [ ] With memory disabled, the model does not claim cross-session recall.
+- [ ] No secrets or private memory were committed to this repository.
+
+The GitHub Actions checks are the authoritative build/test signal for this branch; review their status before deploying.
