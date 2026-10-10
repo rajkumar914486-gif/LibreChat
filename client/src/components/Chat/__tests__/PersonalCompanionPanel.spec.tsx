@@ -18,7 +18,7 @@ describe('PersonalCompanionPanel', () => {
     render(<PersonalCompanionPanel />);
 
     expect(
-      screen.getByRole('heading', { name: 'Your next move starts here' }),
+      screen.getByRole('heading', { name: 'What do you need right now?' }),
     ).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: /Help me think/ })).toBeInTheDocument();
