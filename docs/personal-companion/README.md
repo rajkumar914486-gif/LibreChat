@@ -1,12 +1,14 @@
 # Personal Companion
 
-This branch adds the first usable companion layer to your LibreChat fork: a persistent behavioral skill, a custom new-chat launcher, focused tests, and research-informed implementation notes.
+This branch adds the first usable companion layer to your LibreChat fork: a persistent behavioral skill, a custom new-chat launcher, enabled saved-memory/personalization settings in the example configuration, focused tests, and research-informed implementation notes.
 
 ## Included
 
 - `skill/personal-companion/SKILL.md` — the assistant adapts between guide, teacher, challenger, strategist, builder, researcher, operator, and companion. It has explicit rules for stale memory, feasibility, care, user agency, and capability honesty.
 - `client/src/components/Chat/PersonalCompanionPanel.tsx` — a responsive new-chat panel with five working prompt starters: **Help me think**, **Teach me**, **Challenge me**, **Build with me**, and **Just talk**. Each submits through LibreChat's existing chat submission flow.
 - `client/src/components/Chat/__tests__/PersonalCompanionPanel.spec.tsx` — focused tests for rendering, challenge submission, and the no-agenda conversation path.
+- `e2e/specs/mock/deployment-skills.spec.ts` and its setup — end-to-end coverage for loading the deployment skill alongside LibreChat's existing fixture.
+- `librechat.example.yaml` — companion welcome text and saved-memory/personalization are enabled in the example config.
 - `docs/personal-companion/RESEARCH_NOTES.txt` — research sources and design decisions.
 - This installation and validation guide.
 
@@ -16,7 +18,7 @@ The changes are on branch `feat/personal-intelligence-companion` and are propose
 
 LibreChat documents `skill/` as its shared deployment-skills directory. Make sure your running instance is built from this branch, that the Skills feature is enabled for your user/model, and restart the server. Then verify **Personal Companion** appears in the Skills interface. Deployment skills are read-only shared instructions loaded at server startup, not a per-user memory store.
 
-The new-chat panel is integrated into the existing landing page and uses the currently selected LibreChat endpoint/model. It does not silently switch providers or create new API credentials.
+The new-chat panel is integrated into the existing landing page and uses the currently selected LibreChat endpoint/model. It does not silently switch providers or create new API credentials. The example config now enables LibreChat's saved-memory/personalization feature; this stores user memory in your configured LibreChat deployment, so keep that deployment private and review the saved items.
 
 ## Welcome text (optional)
 
@@ -29,9 +31,9 @@ interface:
 
 ## Make personalization persist
 
-LibreChat has a user-memory feature; this skill explains how to use available memory carefully but does not itself create or import memory. In your running configuration, review the documented `memory:` settings in `librechat.example.yaml`. At minimum, enable the memory/personalization features and ensure your chosen endpoint or agent has memory capability.
+LibreChat's saved-memory and Personalization features are enabled in the example configuration. The skill uses them only when they are actually available to the selected model/agent. Automatic memory updates from ordinary chat messages require a configured memory agent (an existing agent ID or a provider/model you have credentials for); that part is deliberately left as a commented example because this repository cannot know which provider credentials you have. Without a memory agent, saved memories can still be created, edited, deleted, and referenced manually.
 
-Automatic memory updates require a configured memory agent (existing agent ID or provider/model). Configure this only for a provider you have actually set up. Without that agent, users may still be able to manage/reference memories manually, but the companion will not magically learn every detail from every conversation. The system also does not import ChatGPT/Gemini/Claude histories; import only context you intentionally want to retain.
+The companion does not automatically import ChatGPT/Gemini/Claude histories or any external profile. Add only context you intentionally want LibreChat to retain. The memory settings do not give the model access to private files, another service's history, your calendar, or devices.
 
 ## What this does not claim
 
